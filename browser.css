@@ -1,0 +1,10 @@
+.header {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+}
+
+.header-boards-button {
+  margin-left: 70px;
+}
