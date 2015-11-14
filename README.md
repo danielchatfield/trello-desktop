@@ -1,4 +1,4 @@
-# <img src="media/Icon.png" width="45" align="left">&nbsp;Trello Desktop
+# Trello Desktop
 
 > Unofficial Trello Desktop app
 
