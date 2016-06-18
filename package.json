@@ -2,7 +2,7 @@
   "name": "trello-desktop",
   "productName": "Trello",
   "desktopName": "Trello",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Unofficial Trello desktop app",
   "license": "MIT",
   "repository": "danielchatfield/trello-desktop",
@@ -18,28 +18,31 @@
   "scripts": {
     "test": "xo",
     "start": "electron .",
-    "build": "npm run build-osx && npm run build-linux && npm run build-windows",
-    "build-osx": "electron-packager . $npm_package_productName --overwrite --out=dist --ignore='^/dist$' --ignore='^/media$' --prune --platform=darwin --arch=x64 --icon=media/Icon.icns --app-bundle-id=com.danielchatfield.trello-desktop --sign='Developer ID Application: Daniel Chatfield (BB2HNG5KBM)' --app-version=$npm_package_version --version=$npm_package_electronVersion && cd ./dist/Trello-darwin-x64 && zip -ryXq9 ../Trello-osx-${npm_package_version}.zip Trello.app",
-    "build-linux": "electron-packager . $npm_package_productName --overwrite --out=dist --ignore='^/dist$' --ignore='^/media/(?!Icon.png$).*' --prune --platform=linux --arch=x64 --app-bundle-id=com.danielchatfield.trello-desktop --app-version=$npm_package_version --version=$npm_package_electronVersion && cd ./dist/Trello-linux-x64/ && zip -ryq9 ../Trello-linux-\"$npm_package_version\".zip *",
-    "build-windows": "electron-packager . $npm_package_productName --overwrite --out=dist --ignore='^/dist$' --ignore='^/media/(?!Icon.ico$).*' --prune --platform=win32 --arch=ia32 --icon=media/Icon.ico --version=$npm_package_electronVersion --version-string.ProductName=$npm_package_productName --version-string.ProductVersion=$npm_package_electronVersion && cd ./dist/Trello-win32-ia32/ && zip -ryq9 ../Trello-windows-\"$npm_package_version\".zip *"
+    "build": "npm run build:macos && npm run build:linux && npm run build:windows",
+    "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=darwin --arch=x64 --icon=static/Icon.icns --app-bundle-id=com.danielchatfield.trello-desktop --sign='Developer ID Application: Daniel Chatfield (BB2HNG5KBM)' --app-version=$npm_package_version && cd dist/Trello-darwin-x64 && zip -ryXq9 ../Trello-osx-${npm_package_version}.zip Trello.app",
+    "build:linux": "electron-packager . --overwrite --out=dist --ignore='^media$' --prune --platform=linux --arch=x64 --app-bundle-id=com.danielchatfield.trello-desktop --app-version=$npm_package_version && cd dist/Trello-linux-x64/ && zip -ryq9 ../Trello-linux-${npm_package_version}.zip *",
+    "build:windows": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=win32 --arch=ia32 --icon=static/Icon.ico --version-string.ProductName=$npm_package_productName --app-version=$npm_package_version && cd dist/Trello-win32-ia32 && zip -ryq9 ../Trello-windows-${npm_package_version}.zip *"
   },
   "files": [
     "index.js",
     "browser.js",
     "browser.css",
-    "media/Icon.icns",
-    "media/Icon.ico"
+    "static/Icon.icns",
+    "static/Icon.ico"
   ],
   "keywords": [
     "electron-app",
     "trello"
   ],
   "dependencies": {
-    "electron-debug": "^0.2.1"
+    "electron-config": "^0.1.1",
+    "electron-context-menu": "^0.1.0",
+    "electron-debug": "^1.0.0",
+    "electron-dl": "^1.0.0"
   },
   "devDependencies": {
-    "electron-packager": "^5.1.0",
-    "electron-prebuilt": "^0.34.3",
+    "electron-packager": "^7.0.4",
+    "electron-prebuilt": "^1.2.3",
     "xo": "*"
   },
   "xo": {
