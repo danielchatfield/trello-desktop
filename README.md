@@ -1,4 +1,4 @@
-# Trello Desktop
+# Trello Desktop [![Build Status](https://travis-ci.org/danielchatfield/trello-desktop.svg)](https://travis-ci.org/danielchatfield/trello-desktop)
 
 > Unofficial Trello Desktop app
 
