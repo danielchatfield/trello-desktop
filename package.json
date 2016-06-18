@@ -16,7 +16,7 @@
   },
   "electronVersion": "0.34.3",
   "scripts": {
-    "test": "xo",
+    "test": "xo --space",
     "start": "electron .",
     "build": "npm run build:macos && npm run build:linux && npm run build:windows",
     "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=darwin --arch=x64 --icon=static/Icon.icns --app-bundle-id=com.danielchatfield.trello-desktop --sign='Developer ID Application: Daniel Chatfield (BB2HNG5KBM)' --app-version=$npm_package_version && cd dist/Trello-darwin-x64 && zip -ryXq9 ../Trello-osx-${npm_package_version}.zip Trello.app",
@@ -50,6 +50,9 @@
     "envs": [
       "node",
       "browser"
-    ]
+    ],
+    "rules": {
+      "import/no-extraneous-dependencies": 0
+    }
   }
 }

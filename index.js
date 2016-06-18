@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const electron = require('electron');
-const config = require('./config')
+const config = require('./config');
 
 const app = electron.app;
 
@@ -12,19 +12,6 @@ require('electron-context-menu')();
 
 let mainWindow;
 let isQuitting = false;
-
-function updateBadge(title) {
-  if (!app.dock) {
-    return;
-  }
-
-  if (title.indexOf('Messenger') === -1) {
-    return;
-  }
-
-  const messageCount = (/\(([0-9]+)\)/).exec(title);
-  app.dock.setBadge(messageCount ? messageCount[1] : '');
-}
 
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
@@ -48,30 +35,27 @@ function createMainWindow() {
   });
 
   if (process.platform === 'darwin') {
-		win.setSheetOffset(40);
-	}
+    win.setSheetOffset(40);
+  }
 
   win.loadURL('https://trello.com/login');
   win.on('close', e => {
-		if (!isQuitting) {
-			e.preventDefault();
+    if (!isQuitting) {
+      e.preventDefault();
 
-			if (process.platform === 'darwin') {
-				app.hide();
-			} else {
-				win.hide();
-			}
-		}
-	});
-  //win.on('page-title-updated', (e, title) => updateBadge(title));
+      if (process.platform === 'darwin') {
+        app.hide();
+      } else {
+        win.hide();
+      }
+    }
+  });
 
   return win;
 }
 
 app.on('ready', () => {
-
   mainWindow = createMainWindow();
-
   const page = mainWindow.webContents;
 
   page.on('dom-ready', () => {
@@ -81,7 +65,7 @@ app.on('ready', () => {
 
   page.on('new-window', (e, url) => {
     e.preventDefault();
-    shell.openExternal(url);
+    electron.shell.openExternal(url);
   });
 
   mainWindow.webContents.session.on('will-download', (event, item) => {
@@ -95,34 +79,37 @@ app.on('ready', () => {
       mainWindow.setProgressBar(-1);
 
       if (state === 'interrupted') {
-        Dialog.showErrorBox('Download error', 'The download was interrupted');
+        electron.Dialog.showErrorBox('Download error', 'The download was interrupted');
       }
     });
   });
 
-  var template = [{
-    label: "Application",
+  const template = [{
+    label: 'Application',
     submenu: [
-        { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-        { type: "separator" },
-        { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+        {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
+        {type: 'separator'},
+        {label: 'Quit', accelerator: 'Command+Q', click: () => {
+          app.quit();
+        }}
     ]}, {
-    label: "Edit",
-    submenu: [
-        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-        { type: "separator" },
-        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-    ]}
+      label: 'Edit',
+      submenu: [
+        {label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:'},
+        {label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:'},
+        {type: 'separator'},
+        {label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:'},
+        {label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:'},
+        {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
+        {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
+      ]
+    }
   ];
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 });
 
-app.on("window-all-closed", function(){
+app.on('window-all-closed', () => {
   app.quit();
 });
 
