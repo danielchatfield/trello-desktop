@@ -2,7 +2,10 @@
   position: absolute;
   left: 0;
   right: 0;
+}
 
+#header{
+  -webkit-app-region: drag;
 }
 
 .header-boards-button {
