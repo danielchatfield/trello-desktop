@@ -46,7 +46,7 @@ function createMainWindow() {
       if (process.platform === 'darwin') {
         app.hide();
       } else {
-        win.hide();
+        app.quit();
       }
     }
   });
