@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 'use strict';
 const path = require('path');
 const fs = require('fs');
@@ -25,7 +26,8 @@ function createMainWindow() {
     icon: process.platform === 'linux' && path.join(__dirname, 'static', 'Icon.png'),
     minWidth: 400,
     minHeight: 200,
-    titleBarStyle: 'hidden-inset',
+    // titleBarStyle: 'hidden-inset',
+    frame: false,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
