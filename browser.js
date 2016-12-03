@@ -1,31 +1,31 @@
-window.addEventListener('DOMContentLoaded', function () {
+/* jshint esversion:6 */
+window.addEventListener('DOMContentLoaded', () => {
   const remote = require('electron').remote;
-  let navigation       = document.createElement('nav');
+  const navigation = document.createElement('nav');
 
   navigation.className = 'desktop-app-navigation';
   navigation.innerHTML =
     '<ul>' +
-      '<li id="desktop-app-navigation-close"></li>' +
-      '<li id="desktop-app-navigation-minimize"></li>' +
-      '<li id="desktop-app-navigation-maximize"></li>' +
+    '<li id="desktop-app-navigation-close"></li>' +
+    '<li id="desktop-app-navigation-minimize"></li>' +
+    '<li id="desktop-app-navigation-maximize"></li>' +
     '</ul>';
 
   document.getElementById('header').appendChild(navigation);
 
-  document.getElementById("desktop-app-navigation-minimize").addEventListener("click", function (e) {
+  document.getElementById('desktop-app-navigation-minimize').addEventListener('click', () => {
     remote.getCurrentWindow().minimize();
   });
 
-  document.getElementById("desktop-app-navigation-maximize").addEventListener("click", function (e) {
-    if (!remote.getCurrentWindow().isMaximized()) {
-      remote.getCurrentWindow().maximize();
-    } else {
+  document.getElementById('desktop-app-navigation-maximize').addEventListener('click', () => {
+    if (remote.getCurrentWindow().isMaximized()) {
       remote.getCurrentWindow().unmaximize();
+    } else {
+      remote.getCurrentWindow().maximize();
     }
   });
 
-  document.getElementById("desktop-app-navigation-close").addEventListener("click", function (e) {
+  document.getElementById('desktop-app-navigation-close').addEventListener('click', () => {
     remote.getCurrentWindow().close();
   });
-
 });

@@ -89,11 +89,11 @@ app.on('ready', () => {
   const template = [{
     label: 'Application',
     submenu: [
-        {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
-        {type: 'separator'},
-        {label: 'Quit', accelerator: 'Command+Q', click: () => {
-          app.quit();
-        }}
+      {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
+      {type: 'separator'},
+      {label: 'Quit', accelerator: 'Command+Q', click: () => {
+        app.quit();
+      }}
     ]}, {
       label: 'Edit',
       submenu: [
