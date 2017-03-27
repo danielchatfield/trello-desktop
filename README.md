@@ -2,8 +2,7 @@
 
 > Unofficial Trello Desktop app
 
-<br>
-[![](media/screenshot.png)](https://github.com/danielchatfield/trello-desktop/releases/latest)
+[![Trello Desktop](https://github.com/danielchatfield/trello-desktop/blob/master/media/screenshot.png?raw=true)](https://github.com/danielchatfield/trello-desktop/releases/latest)
 
 *OS X 10.8+, Windows 7+ & Linux are supported.*
 
