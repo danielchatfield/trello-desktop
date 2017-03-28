@@ -4,10 +4,46 @@
   right: 0;
 }
 
-#header{
+#header {
   -webkit-app-region: drag;
 }
 
+#header .header-search,
+#header .js-boards-menu,
+#header .header-user,
+#header .desktop-app-navigation li {
+  -webkit-app-region: no-drag;
+}
+
+#header .desktop-app-navigation {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#header .desktop-app-navigation li {
+  display: inline-block;
+  width: 1.0em;
+  height: 1.0em;
+  border-radius: 50%;
+  margin: 0.85em 0.2em 0.4em 0.5em;
+}
+
+#desktop-app-navigation-close {
+  background-color: #ff6058;
+  border: 0.05em solid #e03e36;
+}
+
+#desktop-app-navigation-maximize {
+  background-color: #27c93f;
+  border: 0.05em solid #20882f;
+}
+
+#desktop-app-navigation-minimize {
+  background-color: #ffbe31;
+  border: 0.05em solid #a27b27;
+}
+
 .header-boards-button {
-  margin-left: 70px;
+  margin-left: 80px;
 }

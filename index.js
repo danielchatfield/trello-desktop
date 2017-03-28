@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 'use strict';
 const path = require('path');
 const fs = require('fs');
@@ -25,7 +26,8 @@ function createMainWindow() {
     icon: process.platform === 'linux' && path.join(__dirname, 'static', 'Icon.png'),
     minWidth: 400,
     minHeight: 200,
-    titleBarStyle: 'hidden-inset',
+    // titleBarStyle: 'hidden-inset',
+    frame: false,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
@@ -87,11 +89,11 @@ app.on('ready', () => {
   const template = [{
     label: 'Application',
     submenu: [
-        {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
-        {type: 'separator'},
-        {label: 'Quit', accelerator: 'Command+Q', click: () => {
-          app.quit();
-        }}
+      {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
+      {type: 'separator'},
+      {label: 'Quit', accelerator: 'Command+Q', click: () => {
+        app.quit();
+      }}
     ]}, {
       label: 'Edit',
       submenu: [
