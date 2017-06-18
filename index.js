@@ -127,8 +127,4 @@ app.on('activate', () => {
 
 app.on('before-quit', () => {
   isQuitting = true;
-
-  if (!mainWindow.isFullScreen()) {
-    config.set('lastWindowState', mainWindow.getBounds());
-  }
 });
