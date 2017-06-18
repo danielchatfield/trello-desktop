@@ -38,9 +38,14 @@ function createMainWindow() {
     win.setSheetOffset(40);
   }
 
-  win.loadURL('https://trello.com/login');
+  win.loadURL('https://trello.com/');
+
   win.on('close', e => {
-    if (!isQuitting) {
+    if (isQuitting) {
+      if (!mainWindow.isFullScreen()) {
+        config.set('lastWindowState', mainWindow.getBounds());
+      }
+    } else {
       e.preventDefault();
 
       if (process.platform === 'darwin') {
@@ -87,23 +92,26 @@ app.on('ready', () => {
   const template = [{
     label: 'Application',
     submenu: [
-        {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
-        {type: 'separator'},
-        {label: 'Quit', accelerator: 'Command+Q', click: () => {
+      {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
+      {type: 'separator'},
+      {
+        label: 'Quit', accelerator: 'Command+Q', click: () => {
           app.quit();
-        }}
-    ]}, {
-      label: 'Edit',
-      submenu: [
-        {label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:'},
-        {label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:'},
-        {type: 'separator'},
-        {label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:'},
-        {label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:'},
-        {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
-        {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
-      ]
-    }
+        }
+      }
+    ]
+  }, {
+    label: 'Edit',
+    submenu: [
+      {label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:'},
+      {label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:'},
+      {type: 'separator'},
+      {label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:'},
+      {label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:'},
+      {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
+      {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
+    ]
+  }
   ];
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));

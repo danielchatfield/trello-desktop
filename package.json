@@ -2,7 +2,7 @@
   "name": "trello-desktop",
   "productName": "Trello",
   "desktopName": "Trello",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Unofficial Trello desktop app",
   "license": "MIT",
   "repository": "danielchatfield/trello-desktop",
@@ -42,8 +42,8 @@
     "electron-dl": "^1.0.0"
   },
   "devDependencies": {
-    "electron-packager": "^7.0.4",
-    "electron-prebuilt": "^1.2.3",
+    "electron-packager": "^8.7.1",
+    "electron": "^1.7.3",
     "xo": "*"
   },
   "xo": {
