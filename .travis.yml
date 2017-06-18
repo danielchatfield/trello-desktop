@@ -3,7 +3,7 @@ node_js:
 - '4'
 dist: trusty
 sudo: enabled
-before_deploy: "sudo apt-get install wine && npm run build"
+before_deploy: "sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine && npm run build"
 deploy:
   provider: releases
   api_key:
