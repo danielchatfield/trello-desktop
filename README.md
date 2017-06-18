@@ -21,11 +21,21 @@ To add a shortcut to the app, create a file in `~/.local/share/applications` cal
 ```
 [Desktop Entry]
 Name=Trello
+GenericName=Trello Desktop App
+Comment=Trello on the desktop
 Exec=/full/path/to/folder/Trello
 Terminal=false
 Type=Application
-Icon=/full/path/to/folder/Trello/resources/app/static/Icon.png
+Icon=trello
+Categories=Office;
+StartupNotify=false
 ```
+
+Copy the application icon files to ~/.local/share/icons/hicolor maintaining the directory structure of app-icons
+```
+cd /full/path/to/release/files/app-icons
+find . -name '*.png' -exec cp --parents {} ~/.local/share/icons/hicolor \;
+``
 
 ### Windows
 
