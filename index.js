@@ -126,7 +126,7 @@ app.on('ready', () => {
         {type: 'separator'},
         {role: 'quit'}
       ]
-    })
+    });
   }
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
