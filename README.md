@@ -24,7 +24,7 @@ Name=Trello
 Exec=/full/path/to/folder/Trello
 Terminal=false
 Type=Application
-Icon=/full/path/to/folder/Trello/resources/app/static/Icon.png
+Icon=/full/path/to/folder/resources/app/static/Icon.png
 ```
 
 ### Windows
