@@ -11,7 +11,77 @@ require('electron-dl')();
 require('electron-context-menu')();
 
 let mainWindow;
+
 let isQuitting = false;
+let canForceQuit = config.get('minimizeWhenExit');
+let isLaunchAtStartup = config.get('launchAtStartup');
+let exeName = path.basename(process.execPath);
+let appDir = path.dirname(require.main.filename);
+
+let isWindowShown = true;
+let windowVisibility = {
+  'visible': true,
+  'hidden': false
+}
+
+let sysTray = null;
+let sysTrayContextMenu = null;
+
+// System tray template
+let sysTrayContextMenuTemplate = [
+  {
+    label: 'Setting',
+    submenu: [
+      {
+        label: 'Minimize window when exiting',
+        type: 'checkbox',
+        checked: !canForceQuit,
+        click: (item, BrowserWindow) => {
+          canForceQuit = !canForceQuit;
+          item.checked = !canForceQuit;
+          config.set('minimizeWhenExit', canForceQuit);
+        }
+      },
+      {
+        label: 'Launch at startup',
+        type: 'checkbox',
+        checked: isLaunchAtStartup,
+        click: (item, BrowserWindow) => {
+          isLaunchAtStartup = !isLaunchAtStartup;
+          item.checked = isLaunchAtStartup;
+          setForStartup(isLaunchAtStartup);
+          config.set('launchAtStartup', isLaunchAtStartup);
+        }
+      }
+    ]
+  }, 
+  {
+    // miHideWindow
+    label: 'Hide window', 
+    type: 'normal', 
+    visible: true,
+    click: (item, BrowserWindow) => {
+      changeWindowVisiblity(windowVisibility.hidden);
+    }
+  }, 
+  {
+    // miShowWindow
+    label: 'Show widnow',
+    type: 'normal', 
+    visible: false,
+    click: (item, BrowserWindow) => {
+      changeWindowVisiblity(windowVisibility.visible);
+    }
+  },
+  {
+    label: 'Close',
+    type: 'normal',
+    visible: true,
+    click: () => {
+      app.quit();
+    }
+  }
+];
 
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
@@ -51,14 +121,51 @@ function createMainWindow() {
       if (process.platform === 'darwin') {
         app.hide();
       } else {
-        app.quit();
+        if (!canForceQuit) {
+          win.hide();
+          changeWindowVisiblity(windowVisibility.hidden);
+        } else {
+          app.quit();
+        }
       }
     }
   });
 
+  setForStartup(isLaunchAtStartup);
+
   return win;
 }
 
+function changeWindowVisiblity (isShown) {
+  if (isWindowShown == isShown) return;
+
+  isWindowShown = isShown;
+  mainWindow.visible = isShown;
+  console.log(mainWindow.visible);
+  // miHideWindow
+  sysTrayContextMenu.items[1].visible = isWindowShown;
+  // miShowWindow
+  sysTrayContextMenu.items[2].visible = !isWindowShown;
+
+  if (isShown) {
+    mainWindow.show();
+  } else {
+    mainWindow.hide();
+  }
+}
+
+// Setting for launching app at startup
+function setForStartup (canAutoLaunch) {
+  app.setLoginItemSettings({
+    openAtLogin: canAutoLaunch,
+    path: process.execPath,
+    args: [
+      appDir
+    ]
+  });
+}
+
+// App events
 app.on('ready', () => {
   mainWindow = createMainWindow();
   const page = mainWindow.webContents;
@@ -115,6 +222,25 @@ app.on('ready', () => {
   ];
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
+
+  // System tray
+  try {
+    let iconPath = path.join(__dirname, 'static/Icon.ico')
+    sysTray = new electron.Tray(iconPath);
+    sysTrayContextMenu = electron.Menu.buildFromTemplate(sysTrayContextMenuTemplate);
+    sysTray.setToolTip('Trello!');
+    sysTray.setContextMenu(sysTrayContextMenu);
+
+    sysTray.on('double-click', () => {
+      if (!mainWindow.visible) {
+        mainWindow.restore();
+        changeWindowVisiblity(windowVisibility.visible);
+      }
+    });
+  }
+  catch (err) {
+    electron.dialog.showMessageBox(err);
+  }
 });
 
 app.on('window-all-closed', () => {
