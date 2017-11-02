@@ -165,6 +165,25 @@ function setForStartup (canAutoLaunch) {
   });
 }
 
+function checkSingleInstance () {
+  let isSecondInstance = app.makeSingleInstance((cmdline, workingDir) => {
+    if (mainWindow) {
+      if (!mainWindow.visible) {
+        mainWindow.restore();
+        changeWindowVisiblity(windowVisibility.visible);
+      }
+      mainWindow.focus();
+    }
+  });
+  return isSecondInstance;
+}
+
+// Make sure there is only one instance of this app
+if(checkSingleInstance()) {
+  console.log('app is opened already.');
+  app.exit();
+}
+
 // App events
 app.on('ready', () => {
   mainWindow = createMainWindow();
