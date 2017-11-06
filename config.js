@@ -9,6 +9,6 @@ module.exports = new Config({
       height: 600
     },
     launchAtStartup: true,
-    minimizeWhenExit: true
+    minimizeWhenExiting: true
   }
 });

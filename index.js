@@ -13,8 +13,8 @@ require('electron-context-menu')();
 let mainWindow;
 
 let isQuitting = false;
-let canForceQuit = config.get('minimizeWhenExit');
-let isLaunchAtStartup = config.get('launchAtStartup');
+let canForceQuit = config.get('minimizeWhenExiting');
+let canLaunchAtStartup = config.get('launchAtStartup');
 let exeName = path.basename(process.execPath);
 let appDir = path.dirname(require.main.filename);
 
@@ -39,18 +39,18 @@ let sysTrayContextMenuTemplate = [
         click: (item, BrowserWindow) => {
           canForceQuit = !canForceQuit;
           item.checked = !canForceQuit;
-          config.set('minimizeWhenExit', canForceQuit);
+          config.set('minimizeWhenExiting', canForceQuit);
         }
       },
       {
         label: 'Launch at startup',
         type: 'checkbox',
-        checked: isLaunchAtStartup,
+        checked: canLaunchAtStartup,
         click: (item, BrowserWindow) => {
-          isLaunchAtStartup = !isLaunchAtStartup;
-          item.checked = isLaunchAtStartup;
-          setForStartup(isLaunchAtStartup);
-          config.set('launchAtStartup', isLaunchAtStartup);
+          canLaunchAtStartup = !canLaunchAtStartup;
+          item.checked = canLaunchAtStartup;
+          setForStartup(canLaunchAtStartup);
+          config.set('launchAtStartup', canLaunchAtStartup);
         }
       }
     ]
@@ -131,7 +131,7 @@ function createMainWindow() {
     }
   });
 
-  setForStartup(isLaunchAtStartup);
+  setForStartup(canLaunchAtStartup);
 
   return win;
 }
