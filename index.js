@@ -141,7 +141,6 @@ function changeWindowVisiblity (isShown) {
 
   isWindowShown = isShown;
   mainWindow.visible = isShown;
-  console.log(mainWindow.visible);
   // miHideWindow
   sysTrayContextMenu.items[1].visible = isWindowShown;
   // miShowWindow
@@ -180,7 +179,6 @@ function checkSingleInstance () {
 
 // Make sure there is only one instance of this app
 if(checkSingleInstance()) {
-  console.log('app is opened already.');
   app.exit();
 }
 
@@ -243,23 +241,18 @@ app.on('ready', () => {
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 
   // System tray
-  try {
-    let iconPath = path.join(__dirname, 'static/Icon.ico')
-    sysTray = new electron.Tray(iconPath);
-    sysTrayContextMenu = electron.Menu.buildFromTemplate(sysTrayContextMenuTemplate);
-    sysTray.setToolTip('Trello!');
-    sysTray.setContextMenu(sysTrayContextMenu);
+  let iconPath = path.join(__dirname, 'static/Icon.ico')
+  sysTray = new electron.Tray(iconPath);
+  sysTrayContextMenu = electron.Menu.buildFromTemplate(sysTrayContextMenuTemplate);
+  sysTray.setToolTip('Trello desktop app');
+  sysTray.setContextMenu(sysTrayContextMenu);
 
-    sysTray.on('double-click', () => {
-      if (!mainWindow.visible) {
-        mainWindow.restore();
-        changeWindowVisiblity(windowVisibility.visible);
-      }
-    });
-  }
-  catch (err) {
-    electron.dialog.showMessageBox(err);
-  }
+  sysTray.on('click', () => {
+    if (!mainWindow.visible) {
+      mainWindow.restore();
+      changeWindowVisiblity(windowVisibility.visible);
+    }
+  });
 });
 
 app.on('window-all-closed', () => {
