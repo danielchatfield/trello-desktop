@@ -5,13 +5,82 @@ const electron = require('electron');
 const config = require('./config');
 
 const app = electron.app;
+const appDir = path.dirname(require.main.filename);
 
 require('electron-debug')();
 require('electron-dl')();
 require('electron-context-menu')();
 
 let mainWindow;
+
 let isQuitting = false;
+let canForceQuit = config.get('minimizeWhenExiting');
+let canLaunchAtStartup = config.get('launchAtStartup');
+
+let isWindowShown = true;
+const windowVisibility = {
+  visible: true,
+  hidden: false
+};
+
+let sysTray = null;
+let sysTrayContextMenu = null;
+
+// System tray template
+const sysTrayContextMenuTemplate = [
+  {
+    label: 'Setting',
+    submenu: [
+      {
+        label: 'Minimize window when exiting',
+        type: 'checkbox',
+        checked: !canForceQuit,
+        click: item => {
+          canForceQuit = !canForceQuit;
+          item.checked = !canForceQuit;
+          config.set('minimizeWhenExiting', canForceQuit);
+        }
+      },
+      {
+        label: 'Launch at startup',
+        type: 'checkbox',
+        checked: canLaunchAtStartup,
+        click: item => {
+          canLaunchAtStartup = !canLaunchAtStartup;
+          item.checked = canLaunchAtStartup;
+          setForStartup(canLaunchAtStartup);
+          config.set('launchAtStartup', canLaunchAtStartup);
+        }
+      }
+    ]
+  },
+  {
+    // MenuItem: miHideWindow
+    label: 'Hide window',
+    type: 'normal',
+    visible: true,
+    click: () => {
+      changeWindowVisiblity(windowVisibility.hidden);
+    }
+  },
+  {
+    // MenuItem: miShowWindow
+    label: 'Show widnow',
+    type: 'normal',
+    visible: false,
+    click: () => {
+      changeWindowVisiblity(windowVisibility.visible);
+    }
+  },
+  {
+    label: 'Close',
+    type: 'normal',
+    visible: true,
+    click: () => {
+      app.quit();
+    }
+  }
+];
 
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
@@ -50,15 +119,69 @@ function createMainWindow() {
 
       if (process.platform === 'darwin') {
         app.hide();
-      } else {
+      } else if (canForceQuit) {
         app.quit();
+      } else {
+        win.hide();
+        changeWindowVisiblity(windowVisibility.hidden);
       }
     }
   });
 
+  setForStartup(canLaunchAtStartup);
+
   return win;
 }
 
+function changeWindowVisiblity(isShown) {
+  if (isWindowShown === isShown) {
+    return;
+  }
+
+  isWindowShown = isShown;
+  mainWindow.visible = isShown;
+  // MenuItem: miHideWindow
+  sysTrayContextMenu.items[1].visible = isWindowShown;
+  // MenuItem: miShowWindow
+  sysTrayContextMenu.items[2].visible = !isWindowShown;
+
+  if (isShown) {
+    mainWindow.show();
+  } else {
+    mainWindow.hide();
+  }
+}
+
+// Setting for launching app at startup
+function setForStartup(canAutoLaunch) {
+  app.setLoginItemSettings({
+    openAtLogin: canAutoLaunch,
+    path: process.execPath,
+    args: [
+      appDir
+    ]
+  });
+}
+
+function checkSingleInstance() {
+  const isSecondInstance = app.makeSingleInstance(() => {
+    if (mainWindow) {
+      if (!mainWindow.visible) {
+        mainWindow.restore();
+        changeWindowVisiblity(windowVisibility.visible);
+      }
+      mainWindow.focus();
+    }
+  });
+  return isSecondInstance;
+}
+
+// Make sure there is only one instance of this app
+if (checkSingleInstance()) {
+  app.exit();
+}
+
+// App events
 app.on('ready', () => {
   mainWindow = createMainWindow();
   const page = mainWindow.webContents;
@@ -115,6 +238,20 @@ app.on('ready', () => {
   ];
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
+
+  // System tray
+  const iconPath = path.join(__dirname, 'static/Icon.ico');
+  sysTray = new electron.Tray(iconPath);
+  sysTrayContextMenu = electron.Menu.buildFromTemplate(sysTrayContextMenuTemplate);
+  sysTray.setToolTip('Trello desktop app');
+  sysTray.setContextMenu(sysTrayContextMenu);
+
+  sysTray.on('click', () => {
+    if (!mainWindow.visible) {
+      mainWindow.restore();
+      changeWindowVisiblity(windowVisibility.visible);
+    }
+  });
 });
 
 app.on('window-all-closed', () => {
