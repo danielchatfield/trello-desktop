@@ -5,6 +5,7 @@ const electron = require('electron');
 const config = require('./config');
 
 const app = electron.app;
+const appDir = path.dirname(require.main.filename);
 
 require('electron-debug')();
 require('electron-dl')();
@@ -15,20 +16,18 @@ let mainWindow;
 let isQuitting = false;
 let canForceQuit = config.get('minimizeWhenExiting');
 let canLaunchAtStartup = config.get('launchAtStartup');
-let exeName = path.basename(process.execPath);
-let appDir = path.dirname(require.main.filename);
 
 let isWindowShown = true;
-let windowVisibility = {
-  'visible': true,
-  'hidden': false
-}
+const windowVisibility = {
+  visible: true,
+  hidden: false
+};
 
 let sysTray = null;
 let sysTrayContextMenu = null;
 
 // System tray template
-let sysTrayContextMenuTemplate = [
+const sysTrayContextMenuTemplate = [
   {
     label: 'Setting',
     submenu: [
@@ -36,7 +35,7 @@ let sysTrayContextMenuTemplate = [
         label: 'Minimize window when exiting',
         type: 'checkbox',
         checked: !canForceQuit,
-        click: (item, BrowserWindow) => {
+        click: item => {
           canForceQuit = !canForceQuit;
           item.checked = !canForceQuit;
           config.set('minimizeWhenExiting', canForceQuit);
@@ -46,7 +45,7 @@ let sysTrayContextMenuTemplate = [
         label: 'Launch at startup',
         type: 'checkbox',
         checked: canLaunchAtStartup,
-        click: (item, BrowserWindow) => {
+        click: item => {
           canLaunchAtStartup = !canLaunchAtStartup;
           item.checked = canLaunchAtStartup;
           setForStartup(canLaunchAtStartup);
@@ -54,22 +53,22 @@ let sysTrayContextMenuTemplate = [
         }
       }
     ]
-  }, 
+  },
   {
-    // miHideWindow
-    label: 'Hide window', 
-    type: 'normal', 
+    // MenuItem: miHideWindow
+    label: 'Hide window',
+    type: 'normal',
     visible: true,
-    click: (item, BrowserWindow) => {
+    click: () => {
       changeWindowVisiblity(windowVisibility.hidden);
     }
-  }, 
+  },
   {
-    // miShowWindow
+    // MenuItem: miShowWindow
     label: 'Show widnow',
-    type: 'normal', 
+    type: 'normal',
     visible: false,
-    click: (item, BrowserWindow) => {
+    click: () => {
       changeWindowVisiblity(windowVisibility.visible);
     }
   },
@@ -120,13 +119,11 @@ function createMainWindow() {
 
       if (process.platform === 'darwin') {
         app.hide();
+      } else if (canForceQuit) {
+        app.quit();
       } else {
-        if (!canForceQuit) {
-          win.hide();
-          changeWindowVisiblity(windowVisibility.hidden);
-        } else {
-          app.quit();
-        }
+        win.hide();
+        changeWindowVisiblity(windowVisibility.hidden);
       }
     }
   });
@@ -136,14 +133,16 @@ function createMainWindow() {
   return win;
 }
 
-function changeWindowVisiblity (isShown) {
-  if (isWindowShown == isShown) return;
+function changeWindowVisiblity(isShown) {
+  if (isWindowShown === isShown) {
+    return;
+  }
 
   isWindowShown = isShown;
   mainWindow.visible = isShown;
-  // miHideWindow
+  // MenuItem: miHideWindow
   sysTrayContextMenu.items[1].visible = isWindowShown;
-  // miShowWindow
+  // MenuItem: miShowWindow
   sysTrayContextMenu.items[2].visible = !isWindowShown;
 
   if (isShown) {
@@ -154,7 +153,7 @@ function changeWindowVisiblity (isShown) {
 }
 
 // Setting for launching app at startup
-function setForStartup (canAutoLaunch) {
+function setForStartup(canAutoLaunch) {
   app.setLoginItemSettings({
     openAtLogin: canAutoLaunch,
     path: process.execPath,
@@ -164,8 +163,8 @@ function setForStartup (canAutoLaunch) {
   });
 }
 
-function checkSingleInstance () {
-  let isSecondInstance = app.makeSingleInstance((cmdline, workingDir) => {
+function checkSingleInstance() {
+  const isSecondInstance = app.makeSingleInstance(() => {
     if (mainWindow) {
       if (!mainWindow.visible) {
         mainWindow.restore();
@@ -178,7 +177,7 @@ function checkSingleInstance () {
 }
 
 // Make sure there is only one instance of this app
-if(checkSingleInstance()) {
+if (checkSingleInstance()) {
   app.exit();
 }
 
@@ -241,7 +240,7 @@ app.on('ready', () => {
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 
   // System tray
-  let iconPath = path.join(__dirname, 'static/Icon.ico')
+  const iconPath = path.join(__dirname, 'static/Icon.ico');
   sysTray = new electron.Tray(iconPath);
   sysTrayContextMenu = electron.Menu.buildFromTemplate(sysTrayContextMenuTemplate);
   sysTray.setToolTip('Trello desktop app');
