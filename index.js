@@ -15,10 +15,12 @@ let isQuitting = false;
 let showCardShortId = config.get('showCardShortId');
 
 function toggleShowCardShortId(page) {
-  if (!showCardShortId)
-    page.insertCSS('.card-short-id.hide { display:none; }');
-  else
+  if (showCardShortId) {
     page.insertCSS('.card-short-id.hide { display: inline-flex; padding-right: .3em; }');
+  }
+  else {
+    page.insertCSS('.card-short-id.hide { display:none; }');
+  }
 }
 
 function createMainWindow() {
@@ -130,10 +132,10 @@ app.on('ready', () => {
          type: 'checkbox',
          checked: showCardShortId,
          click: item => {
-             showCardShortId = !showCardShortId;
-             item.checked = showCardShortId;
-             config.set('showCardShortId', showCardShortId);
-             toggleShowCardShortId(page);
+           showCardShortId = !showCardShortId;
+           item.checked = showCardShortId;
+           config.set('showCardShortId', showCardShortId);
+           toggleShowCardShortId(page);
          }
         }
     ]
