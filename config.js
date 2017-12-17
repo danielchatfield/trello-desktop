@@ -8,5 +8,6 @@ module.exports = new Config({
       width: 800,
       height: 600
     }
+    , showCardShortId: false
   }
 });
