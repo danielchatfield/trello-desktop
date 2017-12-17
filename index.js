@@ -17,8 +17,7 @@ let showCardShortId = config.get('showCardShortId');
 function toggleShowCardShortId(page) {
   if (showCardShortId) {
     page.insertCSS('.card-short-id.hide { display: inline-flex; padding-right: .3em; }');
-  }
-  else {
+  } else {
     page.insertCSS('.card-short-id.hide { display:none; }');
   }
 }
@@ -125,7 +124,7 @@ app.on('ready', () => {
       {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
       {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
     ]
-  } , {
+  }, {
     label: 'View',
     submenu: [
         {label: 'Show card short id',
