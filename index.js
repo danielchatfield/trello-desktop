@@ -12,14 +12,25 @@ require('electron-context-menu')();
 
 let mainWindow;
 let isQuitting = false;
+let showCardShortId = config.get('showCardShortId');
+
+function toggleShowCardShortId(page) {
+  if (showCardShortId) {
+    page.insertCSS('.card-short-id.hide { display: inline-flex; padding-right: .3em; }');
+  } else {
+    page.insertCSS('.card-short-id.hide { display:none; }');
+  }
+}
 
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
+  const lastShowCardShortId = config.get('showCardShortId');
   const win = new electron.BrowserWindow({
     title: app.getName(),
     show: false,
     x: lastWindowState.x,
     y: lastWindowState.y,
+    showCardShortId: lastShowCardShortId,
     width: lastWindowState.width,
     height: lastWindowState.height,
     icon: process.platform === 'linux' && path.join(__dirname, 'static', 'Icon.png'),
@@ -45,6 +56,7 @@ function createMainWindow() {
       if (!mainWindow.isFullScreen()) {
         config.set('lastWindowState', mainWindow.getBounds());
       }
+      config.set('showCardShortId', mainWindow.showCardShortId);
     } else {
       e.preventDefault();
 
@@ -65,6 +77,7 @@ app.on('ready', () => {
 
   page.on('dom-ready', () => {
     page.insertCSS(fs.readFileSync(path.join(__dirname, 'browser.css'), 'utf8'));
+    toggleShowCardShortId(page);
     mainWindow.show();
   });
 
@@ -111,6 +124,20 @@ app.on('ready', () => {
       {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
       {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
     ]
+  }, {
+    label: 'View',
+    submenu: [
+        {label: 'Show card short id',
+         type: 'checkbox',
+         checked: showCardShortId,
+         click: item => {
+           showCardShortId = !showCardShortId;
+           item.checked = showCardShortId;
+           config.set('showCardShortId', showCardShortId);
+           toggleShowCardShortId(page);
+         }
+        }
+    ]
   }
   ];
 
@@ -128,3 +155,4 @@ app.on('activate', () => {
 app.on('before-quit', () => {
   isQuitting = true;
 });
+
