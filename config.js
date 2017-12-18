@@ -7,7 +7,7 @@ module.exports = new Config({
     lastWindowState: {
       width: 800,
       height: 600
-    }
-    , showCardShortId: false
+    },
+    showCardShortId: false
   }
 });
