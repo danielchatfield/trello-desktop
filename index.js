@@ -136,12 +136,12 @@ app.on('ready', () => {
         {role: 'zoom'},
         {type: 'separator'},
         {role: 'close'}
-      ]
-    }
+    ]
+  }
   ];
-  
-    if (process.platform === 'darwin') {
-    template.unshift({
+
+  if (process.platform === 'darwin') {
+  template.unshift({
       label: app.getName(),
       submenu: [
         {role: 'about'},
@@ -153,7 +153,7 @@ app.on('ready', () => {
         {role: 'quit'}
       ]
     });
-  }
+    }
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 });
