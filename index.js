@@ -37,6 +37,7 @@ function createMainWindow() {
     minWidth: 400,
     minHeight: 200,
     titleBarStyle: 'hidden-inset',
+    // frame: false,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
@@ -103,17 +104,6 @@ app.on('ready', () => {
   });
 
   const template = [{
-    label: 'Application',
-    submenu: [
-      {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
-      {type: 'separator'},
-      {
-        label: 'Quit', accelerator: 'Command+Q', click: () => {
-          app.quit();
-        }
-      }
-    ]
-  }, {
     label: 'Edit',
     submenu: [
       {label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:'},
@@ -138,8 +128,32 @@ app.on('ready', () => {
          }
         }
     ]
-  }
+  }, {
+    label: 'Window',
+    role: 'window',
+    submenu: [
+        {role: 'minimize'},
+        {role: 'zoom'},
+        {type: 'separator'},
+        {role: 'close'}
+      ]
+    }
   ];
+  
+    if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.getName(),
+      submenu: [
+        {role: 'about'},
+        {type: 'separator'},
+        {role: 'hide'},
+        {role: 'hideothers'},
+        {role: 'unhide'},
+        {type: 'separator'},
+        {role: 'quit'}
+      ]
+    });
+  }
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 });
