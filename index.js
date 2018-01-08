@@ -12,20 +12,32 @@ require('electron-context-menu')();
 
 let mainWindow;
 let isQuitting = false;
+let showCardShortId = config.get('showCardShortId');
+
+function toggleShowCardShortId(page) {
+  if (showCardShortId) {
+    page.insertCSS('.card-short-id.hide { display: inline-flex; padding-right: .3em; }');
+  } else {
+    page.insertCSS('.card-short-id.hide { display:none; }');
+  }
+}
 
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
+  const lastShowCardShortId = config.get('showCardShortId');
   const win = new electron.BrowserWindow({
     title: app.getName(),
     show: false,
     x: lastWindowState.x,
     y: lastWindowState.y,
+    showCardShortId: lastShowCardShortId,
     width: lastWindowState.width,
     height: lastWindowState.height,
     icon: process.platform === 'linux' && path.join(__dirname, 'static', 'Icon.png'),
     minWidth: 400,
     minHeight: 200,
     titleBarStyle: 'hidden-inset',
+    // frame: false,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
@@ -45,6 +57,7 @@ function createMainWindow() {
       if (!mainWindow.isFullScreen()) {
         config.set('lastWindowState', mainWindow.getBounds());
       }
+      config.set('showCardShortId', mainWindow.showCardShortId);
     } else {
       e.preventDefault();
 
@@ -65,6 +78,7 @@ app.on('ready', () => {
 
   page.on('dom-ready', () => {
     page.insertCSS(fs.readFileSync(path.join(__dirname, 'browser.css'), 'utf8'));
+    toggleShowCardShortId(page);
     mainWindow.show();
   });
 
@@ -90,17 +104,6 @@ app.on('ready', () => {
   });
 
   const template = [{
-    label: 'Application',
-    submenu: [
-      {label: 'About Application', selector: 'orderFrontStandardAboutPanel:'},
-      {type: 'separator'},
-      {
-        label: 'Quit', accelerator: 'Command+Q', click: () => {
-          app.quit();
-        }
-      }
-    ]
-  }, {
     label: 'Edit',
     submenu: [
       {label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:'},
@@ -111,8 +114,46 @@ app.on('ready', () => {
       {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
       {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
     ]
+  }, {
+    label: 'View',
+    submenu: [
+        {label: 'Show card short id',
+         type: 'checkbox',
+         checked: showCardShortId,
+         click: item => {
+           showCardShortId = !showCardShortId;
+           item.checked = showCardShortId;
+           config.set('showCardShortId', showCardShortId);
+           toggleShowCardShortId(page);
+         }
+        }
+    ]
+  }, {
+    label: 'Window',
+    role: 'window',
+    submenu: [
+        {role: 'minimize'},
+        {role: 'zoom'},
+        {type: 'separator'},
+        {role: 'close'}
+    ]
   }
   ];
+
+  if (process.platform === 'darwin') {
+  template.unshift({
+      label: app.getName(),
+      submenu: [
+        {role: 'about'},
+        {type: 'separator'},
+        {role: 'hide'},
+        {role: 'hideothers'},
+        {role: 'unhide'},
+        {type: 'separator'},
+        {role: 'quit'}
+      ]
+    });
+    }
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 });
@@ -128,3 +169,4 @@ app.on('activate', () => {
 app.on('before-quit', () => {
   isQuitting = true;
 });
+

@@ -4,10 +4,6 @@
   right: 0;
 }
 
-#header{
+#header {
   -webkit-app-region: drag;
-}
-
-.header-boards-button {
-  margin-left: 70px;
 }
