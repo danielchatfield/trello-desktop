@@ -26,7 +26,7 @@ Terminal=false
 Type=Application
 Icon=/full/path/to/folder/Trello/resources/app/static/Icon.png
 ```
-## Ubuntu 19.04 Disco Dingo
+#### Ubuntu 19.04 Disco Dingo
 
 To be able to use the client on this distro it's necessary to add two new packages: `libgtkextra-3.0` and `libgconf2-dev`. This can be done just typing `sudo apt install libgtkextra-3.0 libgconf2-dev -y` in the terminal.
 
