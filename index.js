@@ -4,7 +4,7 @@ const fs = require('fs');
 const electron = require('electron');
 const config = require('./config');
 
-const app = electron.app;
+const {app, BrowserWindow} = electron;
 
 require('electron-debug')();
 require('electron-dl')();
@@ -15,7 +15,7 @@ let isQuitting = false;
 
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
-  const win = new electron.BrowserWindow({
+  const win = new BrowserWindow({
     title: app.getName(),
     show: false,
     x: lastWindowState.x,
@@ -111,8 +111,7 @@ app.on('ready', () => {
       {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'},
       {label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:'}
     ]
-  }
-  ];
+  }];
 
   electron.Menu.setApplicationMenu(electron.Menu.buildFromTemplate(template));
 });
