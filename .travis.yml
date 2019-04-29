@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '4'
+- '11'
 deploy:
   provider: releases
   api_key:
