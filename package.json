@@ -12,7 +12,7 @@
     "url": "http://www.danielchatfield.com"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=11"
   },
   "electronVersion": "0.34.3",
   "scripts": {
