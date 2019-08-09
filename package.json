@@ -42,8 +42,8 @@
     "electron-dl": "^1.0.0"
   },
   "devDependencies": {
-    "electron-packager": "^8.7.1",
-    "electron": "^1.7.3",
+    "electron-packager": "^14.0.0",
+    "electron": "^6.0.0",
     "xo": "*"
   },
   "xo": {
