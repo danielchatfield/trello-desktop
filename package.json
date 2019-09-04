@@ -14,7 +14,7 @@
   "engines": {
     "node": ">=4"
   },
-  "electronVersion": "0.34.3",
+  "electronVersion": "6.0.7",
   "scripts": {
     "test": "xo --space",
     "start": "electron .",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "electron-packager": "^8.7.1",
-    "electron": "^1.7.3",
+    "electron": "^6.0.7",
     "xo": "*"
   },
   "xo": {
