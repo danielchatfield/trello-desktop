@@ -24,7 +24,7 @@
     "build": "npm run build:macos && npm run build:linux && npm run build:windows",
     "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=darwin --arch=x64 --icon=static/Icon.icns --app-bundle-id=com.danielchatfield.trello-desktop --sign='Developer ID Application: Daniel Chatfield (BB2HNG5KBM)' --app-version=$npm_package_version && cd dist/Trello-darwin-x64 && zip -ryXq9 ../Trello-osx-${npm_package_version}.zip Trello.app",
     "build:linux": "electron-packager . --overwrite --out=dist --ignore='^media$' --prune --platform=linux --arch=x64 --icon=static/Icon.png --app-bundle-id=com.danielchatfield.trello-desktop --app-version=$npm_package_version && cd dist/Trello-linux-x64/ && zip -ryq9 ../Trello-linux-${npm_package_version}.zip *",
-    "build:deb64": "electron-installer-debian --src dist/Trello-linux-x64/ --dest dist/installers/ --arch amd64",
+    "build:deb64": "mv dist/Trello-linux-x64/Trello dist/Trello-linux-x64/trello-desktop && electron-installer-debian --src dist/Trello-linux-x64/ --dest dist/installers/ --arch amd64 && mv dist/Trello-linux-x64/trello-desktop dist/Trello-linux-x64/Trello",
     "build:windows": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=win32 --arch=ia32 --icon=static/Icon.ico --version-string.ProductName=$npm_package_productName --app-version=$npm_package_version && cd dist/Trello-win32-ia32 && zip -ryq9 ../Trello-windows-${npm_package_version}.zip *"
   },
   "files": [
