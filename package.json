@@ -14,6 +14,9 @@
   "engines": {
     "node": ">=4"
   },
+  "electronPackagerConfig": {
+    "executableName": "trello-desktop"
+  },
   "electronVersion": "0.34.3",
   "scripts": {
     "test": "xo --space",
@@ -21,6 +24,7 @@
     "build": "npm run build:macos && npm run build:linux && npm run build:windows",
     "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=darwin --arch=x64 --icon=static/Icon.icns --app-bundle-id=com.danielchatfield.trello-desktop --sign='Developer ID Application: Daniel Chatfield (BB2HNG5KBM)' --app-version=$npm_package_version && cd dist/Trello-darwin-x64 && zip -ryXq9 ../Trello-osx-${npm_package_version}.zip Trello.app",
     "build:linux": "electron-packager . --overwrite --out=dist --ignore='^media$' --prune --platform=linux --arch=x64 --icon=static/Icon.png --app-bundle-id=com.danielchatfield.trello-desktop --app-version=$npm_package_version && cd dist/Trello-linux-x64/ && zip -ryq9 ../Trello-linux-${npm_package_version}.zip *",
+    "build:deb64": "electron-installer-debian --src dist/Trello-linux-x64/ --dest dist/installers/ --arch amd64",
     "build:windows": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=win32 --arch=ia32 --icon=static/Icon.ico --version-string.ProductName=$npm_package_productName --app-version=$npm_package_version && cd dist/Trello-win32-ia32 && zip -ryq9 ../Trello-windows-${npm_package_version}.zip *"
   },
   "files": [
@@ -36,14 +40,15 @@
     "trello"
   ],
   "dependencies": {
-    "electron-config": "^0.1.1",
-    "electron-context-menu": "^0.1.0",
-    "electron-debug": "^1.0.0",
+    "electron-config": "^2.0.0",
+    "electron-context-menu": "^0.15.0",
+    "electron-debug": "^3.0.1",
     "electron-dl": "^1.0.0"
   },
   "devDependencies": {
-    "electron-packager": "^8.7.1",
-    "electron": "^1.7.3",
+    "electron": "^6.0.12",
+    "electron-installer-debian": "^2.0.1",
+    "electron-packager": "^14.0.6",
     "xo": "*"
   },
   "xo": {
