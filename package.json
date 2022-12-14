@@ -2,7 +2,7 @@
   "name": "trello-desktop",
   "productName": "Trello",
   "desktopName": "Trello",
-  "version": "0.1.5",
+  "version": "0.2.1",
   "description": "Unofficial Trello desktop app",
   "license": "MIT",
   "repository": "danielchatfield/trello-desktop",
